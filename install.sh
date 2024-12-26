@@ -4,7 +4,7 @@
 sudo apt update && sudo apt upgrade -y
 
 # Install dependencies for Docker
-echo "Installing dependencies for Docker..."
+echo "Installing Docker and dependencies..."
 sudo apt install -y \
     ca-certificates \
     curl \
