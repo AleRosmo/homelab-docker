@@ -19,6 +19,7 @@ sudo apt install -y \
 sudo mkdir -p /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
+# TODO: Do we really need to add Docker's repository? Can't we just install from Debian repo?
 # Add Docker repository
 echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
@@ -26,7 +27,31 @@ echo \
 
 # Update apt and install Docker
 sudo apt update
+# TODO: Is this stuff below really needed? Especially if installing 'docker' package?
 sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+# Configure Docker to accept connections from LAN
+echo "Configuring Docker to accept LAN connections..."
+sudo mkdir -p /etc/docker
+cat <<EOF | sudo tee /etc/docker/daemon.json
+{
+  "hosts": ["unix:///var/run/docker.sock", "tcp://0.0.0.0:2375"]
+}
+EOF
+
+# TODO: Might not be needed as it's already stopped, check.
+# # Restart Docker to apply the configuration
+# echo "Restarting Docker service..."
+# sudo systemctl restart docker
+
+# Verify Docker is configured for LAN access
+echo "Verifying Docker configuration..."
+if sudo netstat -tuln | grep -q ":2375"; then
+    echo "Docker is configured to accept LAN connections on port 2375."
+else
+    echo "Failed to configure Docker for LAN access. Check the configuration."
+    exit 1
+fi
 
 # Enable and start Docker
 sudo systemctl enable docker
@@ -80,7 +105,6 @@ SUBNET_MASK=${SUBNET_MASK:-$CURRENT_SUBNET_MASK}
 read -p "Gateway [$CURRENT_GATEWAY]: " GATEWAY
 GATEWAY=${GATEWAY:-$CURRENT_GATEWAY}
 
-# Note the prompt clarifies multiple IP addresses are allowed for DNS:
 read -p "DNS Server(s) (space-separated) [$CURRENT_DNS]: " DNS
 DNS=${DNS:-$CURRENT_DNS}
 
@@ -138,3 +162,7 @@ if [[ "$REBOOT" == "y" || "$REBOOT" == "Y" ]]; then
 else
     echo "Reboot skipped. Please reboot later to apply all changes."
 fi
+
+
+# Provide instructions for exposing containers
+echo "To expose a container to the network, use the '--network host' option when running a container."
