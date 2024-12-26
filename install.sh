@@ -40,30 +40,36 @@ cat <<EOF | sudo tee /etc/docker/daemon.json
 }
 EOF
 
+# Provide instructions for exposing containers
+echo "To expose a container to the network, use the '--network host' option when running a container."
+
+
+# Update Docker service configuration for LAN access
+echo "Updating Docker service configuration to remove conflicting flags..."
+sudo sed -i 's|ExecStart=.*|ExecStart=/usr/bin/dockerd|' /lib/systemd/system/docker.service
+
 # TODO: Might not be needed as it's already stopped, check.
-# Restart Docker to apply configuration
-echo "Restarting Docker service..."
+
+# Reload systemd configuration and restart Docker
+echo "Reloading systemd configuration and restarting Docker..."
 sudo systemctl daemon-reload
 sudo systemctl restart docker
 
-# Check Docker service status
+# Verify Docker is configured and running
+echo "Verifying Docker configuration..."
 if systemctl is-active --quiet docker; then
-    echo "Docker is running and configured to accept LAN connections."
+    echo "Docker is running and listening on the specified ports."
 else
-    echo "Docker service failed to start. Check logs with 'sudo journalctl -xe'."
+    echo "Docker failed to start. Check logs with 'journalctl -xeu docker.service'."
     exit 1
 fi
 
-# Verify Docker installation and configuration
-echo "Verifying Docker installation..."
-docker --version
-docker compose version
-
-# Check for Docker LAN configuration
+# Verify Docker is listening on port 2375
+echo "Checking if Docker is listening on port 2375..."
 if sudo netstat -tuln | grep -q ":2375"; then
-    echo "Docker is listening on port 2375 for LAN connections."
+    echo "Docker is listening on port 2375."
 else
-    echo "Docker is not configured for LAN access. Check the configuration in /etc/docker/daemon.json."
+    echo "Docker is not listening on port 2375. Check the daemon.json configuration and Docker logs."
     exit 1
 fi
 
@@ -168,7 +174,3 @@ if [[ "$REBOOT" == "y" || "$REBOOT" == "Y" ]]; then
 else
     echo "Reboot skipped. Please reboot later to apply all changes."
 fi
-
-
-# Provide instructions for exposing containers
-echo "To expose a container to the network, use the '--network host' option when running a container."
