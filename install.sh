@@ -33,6 +33,7 @@ sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 # Configure Docker to accept connections from LAN
 echo "Configuring Docker to accept LAN connections..."
 sudo mkdir -p /etc/docker
+sudo mv /etc/docker/daemon.json /etc/docker/daemon.json.bak 2>/dev/null || true
 cat <<EOF | sudo tee /etc/docker/daemon.json
 {
   "hosts": ["unix:///var/run/docker.sock", "tcp://0.0.0.0:2375"]
@@ -40,24 +41,29 @@ cat <<EOF | sudo tee /etc/docker/daemon.json
 EOF
 
 # TODO: Might not be needed as it's already stopped, check.
-# # Restart Docker to apply the configuration
-# echo "Restarting Docker service..."
-# sudo systemctl restart docker
+# Restart Docker to apply configuration
+echo "Restarting Docker service..."
+sudo systemctl daemon-reload
+sudo systemctl restart docker
 
-# Enable and start Docker
-sudo systemctl enable docker
-sudo systemctl start docker
+# Check Docker service status
+if systemctl is-active --quiet docker; then
+    echo "Docker is running and configured to accept LAN connections."
+else
+    echo "Docker service failed to start. Check logs with 'sudo journalctl -xe'."
+    exit 1
+fi
 
-# Verify Docker is installed and configured correctly
-echo "Verifying Docker installation and configuration..."
+# Verify Docker installation and configuration
+echo "Verifying Docker installation..."
 docker --version
 docker compose version
 
-# Check if Docker is configured to accept LAN connections
+# Check for Docker LAN configuration
 if sudo netstat -tuln | grep -q ":2375"; then
-    echo "Docker is configured to accept LAN connections on port 2375."
+    echo "Docker is listening on port 2375 for LAN connections."
 else
-    echo "Failed to configure Docker for LAN access. Check the configuration."
+    echo "Docker is not configured for LAN access. Check the configuration in /etc/docker/daemon.json."
     exit 1
 fi
 
