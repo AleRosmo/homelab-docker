@@ -61,6 +61,12 @@ read -p "DNS Server [$CURRENT_DNS]: " DNS
 DNS=${DNS:-$CURRENT_DNS}
 
 # Validate IP inputs (basic regex check)
+echo "Debug: INTERFACE=$INTERFACE"
+echo "Debug: IP_ADDRESS=$IP_ADDRESS"
+echo "Debug: SUBNET_MASK=$SUBNET_MASK"
+echo "Debug: GATEWAY=$GATEWAY"
+echo "Debug: DNS=$DNS"
+
 if ! [[ $INTERFACE =~ ^[a-zA-Z0-9]+$ ]] || \
    ! [[ $IP_ADDRESS =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || \
    ! [[ $SUBNET_MASK =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || \
