@@ -44,22 +44,22 @@ EOF
 # echo "Restarting Docker service..."
 # sudo systemctl restart docker
 
-# Verify Docker is configured for LAN access
-echo "Verifying Docker configuration..."
+# Enable and start Docker
+sudo systemctl enable docker
+sudo systemctl start docker
+
+# Verify Docker is installed and configured correctly
+echo "Verifying Docker installation and configuration..."
+docker --version
+docker compose version
+
+# Check if Docker is configured to accept LAN connections
 if sudo netstat -tuln | grep -q ":2375"; then
     echo "Docker is configured to accept LAN connections on port 2375."
 else
     echo "Failed to configure Docker for LAN access. Check the configuration."
     exit 1
 fi
-
-# Enable and start Docker
-sudo systemctl enable docker
-sudo systemctl start docker
-
-# Verify Docker installation
-docker --version
-docker compose version
 
 # Add current user to the Docker group (optional, requires re-login)
 sudo usermod -aG docker "$USER"
