@@ -49,22 +49,22 @@ CURRENT_DNS="8.8.8.8 8.8.4.4"
 
 # Prompt for network configuration with default values
 echo "Please enter the following network configuration details (press Enter to accept default values):"
-read -p "Interface name [default: $CURRENT_INTERFACE]: " INTERFACE
+read -p "Interface name [$CURRENT_INTERFACE]: " INTERFACE
 INTERFACE=${INTERFACE:-$CURRENT_INTERFACE}
-read -p "IP Address [default: $CURRENT_IP_ADDRESS]: " IP_ADDRESS
+read -p "IP Address [$CURRENT_IP_ADDRESS]: " IP_ADDRESS
 IP_ADDRESS=${IP_ADDRESS:-$CURRENT_IP_ADDRESS}
-read -p "Subnet Mask [default: $CURRENT_SUBNET_MASK]: " SUBNET_MASK
+read -p "Subnet Mask [$CURRENT_SUBNET_MASK]: " SUBNET_MASK
 SUBNET_MASK=${SUBNET_MASK:-$CURRENT_SUBNET_MASK}
-read -p "Gateway [default: $CURRENT_GATEWAY]: " GATEWAY
+read -p "Gateway [$CURRENT_GATEWAY]: " GATEWAY
 GATEWAY=${GATEWAY:-$CURRENT_GATEWAY}
-read -p "DNS Server [default: $CURRENT_DNS]: " DNS
+read -p "DNS Server [$CURRENT_DNS]: " DNS
 DNS=${DNS:-$CURRENT_DNS}
 
 # Validate IP inputs (basic regex check)
-if ! [[ $IP_ADDRESS =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || \
-   ! [[ $SUBNET_MASK =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || \
-   ! [[ $GATEWAY =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || \
-   ! [[ $DNS =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+if [[ -n $IP_ADDRESS && ! $IP_ADDRESS =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || \
+   [[ -n $SUBNET_MASK && ! $SUBNET_MASK =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || \
+   [[ -n $GATEWAY && ! $GATEWAY =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || \
+   [[ -n $DNS && ! $DNS =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     echo "Invalid IP address format. Please check your inputs."
     exit 1
 fi
