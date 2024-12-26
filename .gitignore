@@ -1,6 +1,12 @@
+# Grafana folder exclusions
 grafana/*
 !grafana/grafana.ini
+!grafana/provisioning/
+
+# InfluxDB folder exclusions
 influxdb/*
 !influxdb/influxdb.conf
 !influxdb/init-script.sh
 
+# MacOS related exclusions
+.DS_Store
