@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Exit on error
+set -e
+
 # Update and upgrade system
 sudo apt update && sudo apt upgrade -y
 
@@ -35,6 +38,7 @@ docker compose version
 
 # Add current user to the Docker group (optional, requires re-login)
 sudo usermod -aG docker $USER
+echo "You need to log out and back in to use Docker as a non-root user."
 
 # Prompt for network configuration
 echo "Please enter the following network configuration details:"
@@ -43,6 +47,15 @@ read -p "IP Address (e.g., 192.168.1.100): " IP_ADDRESS
 read -p "Subnet Mask (e.g., 255.255.255.0): " SUBNET_MASK
 read -p "Gateway (e.g., 192.168.1.1): " GATEWAY
 read -p "DNS Server (e.g., 8.8.8.8): " DNS
+
+# Validate IP inputs (basic regex check)
+if ! [[ $IP_ADDRESS =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || \
+   ! [[ $SUBNET_MASK =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || \
+   ! [[ $GATEWAY =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || \
+   ! [[ $DNS =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    echo "Invalid IP address format. Please check your inputs."
+    exit 1
+fi
 
 echo "Configuring static IP for $INTERFACE..."
 
@@ -59,7 +72,6 @@ EOL
 
 # Restart networking service
 echo "Restarting network service to apply the static IP configuration..."
-# Restart networking service to apply changes
 sudo systemctl restart networking
 
 # Verify network configuration
@@ -68,8 +80,12 @@ ifconfig $INTERFACE
 # Disable PC speaker
 echo "Disabling PC speaker..."
 echo "blacklist pcspkr" | sudo tee /etc/modprobe.d/nobeep.conf > /dev/null
-sudo rmmod pcspkr
+sudo rmmod pcspkr || true # Ignore error if the module is not loaded
 
-# Final reboot to apply all changes
-echo "Configuration complete. Rebooting the system to apply all changes..."
-sudo reboot
+# Prompt for final reboot
+read -p "Configuration complete. Do you want to reboot now? (y/n): " REBOOT
+if [[ $REBOOT == "y" || $REBOOT == "Y" ]]; then
+    sudo reboot
+else
+    echo "Reboot skipped. Please reboot later to apply all changes."
+fi
