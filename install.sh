@@ -40,13 +40,25 @@ docker compose version
 sudo usermod -aG docker $USER
 echo "You need to log out and back in to use Docker as a non-root user."
 
-# Prompt for network configuration
-echo "Please enter the following network configuration details:"
-read -p "Interface name (e.g., eth0): " INTERFACE
-read -p "IP Address (e.g., 192.168.1.100): " IP_ADDRESS
-read -p "Subnet Mask (e.g., 255.255.255.0): " SUBNET_MASK
-read -p "Gateway (e.g., 192.168.1.1): " GATEWAY
-read -p "DNS Server (e.g., 8.8.8.8): " DNS
+# Get current network configuration
+CURRENT_INTERFACE=$(ip route | grep default | awk '{print $5}')
+CURRENT_IP_ADDRESS=$(ip -o -4 addr list $CURRENT_INTERFACE | awk '{print $4}' | cut -d/ -f1)
+CURRENT_SUBNET_MASK=$(ip -o -4 addr list $CURRENT_INTERFACE | awk '{print $4}' | cut -d/ -f2)
+CURRENT_GATEWAY=$(ip route | grep default | awk '{print $3}')
+CURRENT_DNS="8.8.8.8 8.8.4.4"
+
+# Prompt for network configuration with default values
+echo "Please enter the following network configuration details (press Enter to accept default values):"
+read -p "Interface name [default: $CURRENT_INTERFACE]: " INTERFACE
+INTERFACE=${INTERFACE:-$CURRENT_INTERFACE}
+read -p "IP Address [default: $CURRENT_IP_ADDRESS]: " IP_ADDRESS
+IP_ADDRESS=${IP_ADDRESS:-$CURRENT_IP_ADDRESS}
+read -p "Subnet Mask [default: $CURRENT_SUBNET_MASK]: " SUBNET_MASK
+SUBNET_MASK=${SUBNET_MASK:-$CURRENT_SUBNET_MASK}
+read -p "Gateway [default: $CURRENT_GATEWAY]: " GATEWAY
+GATEWAY=${GATEWAY:-$CURRENT_GATEWAY}
+read -p "DNS Server [default: $CURRENT_DNS]: " DNS
+DNS=${DNS:-$CURRENT_DNS}
 
 # Validate IP inputs (basic regex check)
 if ! [[ $IP_ADDRESS =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || \
