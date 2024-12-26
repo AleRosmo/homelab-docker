@@ -40,8 +40,8 @@ cat <<EOF | sudo tee /etc/docker/daemon.json
 }
 EOF
 
-# Provide instructions for exposing containers
-echo "To expose a container to the network, use the '--network host' option when running a container."
+# # Provide instructions for exposing containers
+# echo "To expose a container to the network, use the '--network host' option when running a container."
 
 
 # Update Docker service configuration for LAN access
