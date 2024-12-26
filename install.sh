@@ -40,10 +40,29 @@ docker compose version
 sudo usermod -aG docker $USER
 echo "You need to log out and back in to use Docker as a non-root user."
 
+# Function to convert CIDR to subnet mask
+cidr_to_netmask() {
+    local cidr=$1
+    local mask=""
+    local i
+    for ((i=0; i<4; i++)); do
+        if [ $cidr -ge 8 ]; then
+            mask+=255
+            cidr=$((cidr-8))
+        else
+            mask+=$((256-(2**(8-cidr))))
+            cidr=0
+        fi
+        [ $i -lt 3 ] && mask+=.
+    done
+    echo $mask
+}
+
 # Get current network configuration
 CURRENT_INTERFACE=$(ip route | grep default | awk '{print $5}')
 CURRENT_IP_ADDRESS=$(ip -o -4 addr list $CURRENT_INTERFACE | awk '{print $4}' | cut -d/ -f1)
-CURRENT_SUBNET_MASK=$(ip -o -4 addr list $CURRENT_INTERFACE | awk '{print $4}' | cut -d/ -f2)
+CURRENT_CIDR=$(ip -o -4 addr list $CURRENT_INTERFACE | awk '{print $4}' | cut -d/ -f2)
+CURRENT_SUBNET_MASK=$(cidr_to_netmask $CURRENT_CIDR)
 CURRENT_GATEWAY=$(ip route | grep default | awk '{print $3}')
 CURRENT_DNS="8.8.8.8 8.8.4.4"
 
