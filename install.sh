@@ -8,7 +8,8 @@ sudo apt install -y \
     ca-certificates \
     curl \
     gnupg \
-    lsb-release
+    lsb-release \
+    net-tools
 
 # Add Docker's official GPG key
 sudo mkdir -p /etc/apt/keyrings
@@ -27,12 +28,30 @@ sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 sudo systemctl enable docker
 sudo systemctl start docker
 
-# Verify Docker installation
-docker --version
-docker compose version
+# Set static IP configuration
+INTERFACE="eth0"
+IP_ADDRESS="192.168.188.201"
+GATEWAY="192.168.188.1"
+DNS="8.8.8.8 8.8.4.4"
+
+echo "Configuring static IP for $INTERFACE..."
+sudo tee /etc/network/interfaces.d/$INTERFACE.cfg > /dev/null <<EOL
+auto $INTERFACE
+iface $INTERFACE inet static
+    address $IP_ADDRESS
+    netmask 255.255.255.0
+    gateway $GATEWAY
+    dns-nameservers $DNS
+EOL
+
+# Restart networking service to apply changes
+sudo systemctl restart networking
+
+# Verify network configuration
+ifconfig $INTERFACE
 
 # Add current user to the Docker group (optional, requires re-login)
 sudo usermod -aG docker $USER
 
 # Final message
-echo "Docker and Docker Compose are installed and ready to use!"
+echo "Docker, Docker Compose, and static IP configuration are complete!"
