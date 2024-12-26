@@ -85,7 +85,7 @@ echo "Restarting network service to apply the static IP configuration..."
 sudo systemctl restart networking
 
 # Verify network configuration
-ifconfig $INTERFACE
+ip addr show $INTERFACE
 
 # Disable PC speaker
 echo "Disabling PC speaker..."
