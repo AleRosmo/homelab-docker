@@ -13,7 +13,8 @@ sudo apt install -y \
     curl \
     gnupg \
     lsb-release \
-    net-tools
+    net-tools \
+    sudo
 
 # Add Docker's official GPG key
 sudo mkdir -p /etc/apt/keyrings
@@ -56,6 +57,15 @@ if ! [[ $IP_ADDRESS =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || \
     echo "Invalid IP address format. Please check your inputs."
     exit 1
 fi
+
+echo "Backing up and cleaning /etc/network/interfaces..."
+
+# Backup and clean /etc/network/interfaces
+echo "Backing up and cleaning /etc/network/interfaces..."
+sudo cp /etc/network/interfaces /etc/network/interfaces.bak
+sudo bash -c 'cat > /etc/network/interfaces' <<EOL
+source /etc/network/interfaces.d/*
+EOL
 
 echo "Configuring static IP for $INTERFACE..."
 
