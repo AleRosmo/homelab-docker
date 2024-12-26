@@ -1,0 +1,19 @@
+{
+    "annotations": {
+      "list": []
+    },
+    "panels": [
+      {
+        "type": "timeseries",
+        "title": "Sample Data",
+        "targets": [
+          {
+            "bucket": "water_heating_data",
+            "org": "homelab",
+            "query": "from(bucket: \"water_heating_data\") |> range(start: -1h)"
+          }
+        ]
+      }
+    ],
+    "title": "Sample Dashboard"
+  }
