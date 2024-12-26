@@ -2,3 +2,5 @@ grafana/*
 !grafana/grafana.ini
 influxdb/*
 !influxdb/influxdb.conf
+!influxdb/init-script.sh
+
