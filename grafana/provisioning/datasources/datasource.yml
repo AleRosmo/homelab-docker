@@ -1,0 +1,12 @@
+apiVersion: 1
+datasources:
+  - name: InfluxDB
+    type: influxdb
+    access: proxy
+    url: http://influxdb:8086
+    isDefault: true
+    jsonData:
+      organization: homelab
+      defaultBucket: water_heating_data
+    secureJsonData:
+      token: YOUR_SECURE_TOKEN
