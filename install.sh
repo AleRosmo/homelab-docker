@@ -61,10 +61,11 @@ read -p "DNS Server [$CURRENT_DNS]: " DNS
 DNS=${DNS:-$CURRENT_DNS}
 
 # Validate IP inputs (basic regex check)
-if [[ -n $IP_ADDRESS && ! $IP_ADDRESS =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || \
-   [[ -n $SUBNET_MASK && ! $SUBNET_MASK =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || \
-   [[ -n $GATEWAY && ! $GATEWAY =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || \
-   [[ -n $DNS && ! $DNS =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+if ! [[ $INTERFACE =~ ^[a-zA-Z0-9]+$ ]] || \
+   ! [[ $IP_ADDRESS =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || \
+   ! [[ $SUBNET_MASK =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || \
+   ! [[ $GATEWAY =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || \
+   ! [[ $DNS =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     echo "Invalid IP address format. Please check your inputs."
     exit 1
 fi
