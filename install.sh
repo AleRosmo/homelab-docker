@@ -120,13 +120,6 @@ GATEWAY=${GATEWAY:-$CURRENT_GATEWAY}
 read -p "DNS Server(s) (space-separated) [$CURRENT_DNS]: " DNS
 DNS=${DNS:-$CURRENT_DNS}
 
-# Debug info
-echo "Debug: INTERFACE=$INTERFACE"
-echo "Debug: IP_ADDRESS=$IP_ADDRESS"
-echo "Debug: SUBNET_MASK=$SUBNET_MASK"
-echo "Debug: GATEWAY=$GATEWAY"
-echo "Debug: DNS=$DNS"
-
 # Validate inputs
 # The key change: DNS now checks for one or more space-separated IP addresses
 if ! [[ $INTERFACE =~ ^[a-zA-Z0-9]+$ ]] || \
