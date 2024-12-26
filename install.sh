@@ -4,6 +4,7 @@
 sudo apt update && sudo apt upgrade -y
 
 # Install dependencies for Docker
+echo "Installing dependencies for Docker..."
 sudo apt install -y \
     ca-certificates \
     curl \
@@ -50,8 +51,17 @@ sudo systemctl restart networking
 # Verify network configuration
 ifconfig $INTERFACE
 
+# Verify Docker installation
+docker --version
+docker compose version
+
 # Add current user to the Docker group (optional, requires re-login)
 sudo usermod -aG docker $USER
 
+# Disable PC speaker
+echo "Disabling PC speaker..."
+echo "blacklist pcspkr" | sudo tee /etc/modprobe.d/nobeep.conf > /dev/null
+sudo rmmod pcspkr
+
 # Final message
-echo "Docker, Docker Compose, and static IP configuration are complete!"
+echo "Setup complete: Docker is installed, static IP is configured, and PC speaker is disabled."
