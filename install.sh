@@ -13,7 +13,6 @@ sudo apt install -y \
     curl \
     gnupg \
     lsb-release \
-    net-tools \
     sudo
 
 # Add Docker's official GPG key
