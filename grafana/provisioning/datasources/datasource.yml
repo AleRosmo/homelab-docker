@@ -9,4 +9,4 @@ datasources:
       organization: homelab
       defaultBucket: water_heating_data
     secureJsonData:
-      token: YOUR_SECURE_TOKEN
+      token: ${INFLUXDB_TOKEN}
