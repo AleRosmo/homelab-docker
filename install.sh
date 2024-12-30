@@ -81,6 +81,10 @@ curl -fsSL https://raw.githubusercontent.com/AleRosmo/scripts/refs/heads/main/de
 chmod +x $NETSETUP_FILE
 bash -c $NETSETUP_FILE
 
+# TODO: Script to create and chkmod grafana directory - TRY CLEAN INSTALL AND SEE IF PROBLEM PERSISTS
+# sudo chown -R 472:472 /home/revengeic3/homelab-docker/grafana
+# sudo chmod -R 755 /home/revengeic3/homelab-docker/grafana
+
 # Disable PC speaker
 echo "Disabling PC speaker..."
 echo "blacklist pcspkr" | sudo tee /etc/modprobe.d/nobeep.conf > /dev/null
