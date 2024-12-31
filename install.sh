@@ -82,8 +82,15 @@ chmod +x $NETSETUP_FILE
 bash -c $NETSETUP_FILE
 
 # TODO: Script to create and chkmod grafana directory - TRY CLEAN INSTALL AND SEE IF PROBLEM PERSISTS
-# sudo chown -R 472:472 /home/revengeic3/homelab-docker/grafana
-# sudo chmod -R 755 /home/revengeic3/homelab-docker/grafana
+# TODO" Temporary, to put in another script
+mkdir -p ./grafana
+sudo chown -R 472:472 ./grafana
+sudo chmod -R 755 ./grafana
+
+mkdir -p ./influxdb
+sudo chown -R 472:472 ./influxdb
+sudo chmod -R 755 ./influxdb
+###### END TEMPORARY ######
 
 # Disable PC speaker
 echo "Disabling PC speaker..."
