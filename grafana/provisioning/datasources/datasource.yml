@@ -3,10 +3,10 @@ datasources:
   - name: InfluxDB
     type: influxdb
     access: proxy
-    url: ${INFLUXDB_ADDRESS}
+    url: http://influxdb:8086
     isDefault: true
     jsonData:
       organization: homelab
       defaultBucket: water_heating_data
     secureJsonData:
-      token: ${INFLUXDB_TOKEN}
+      token: ZSAvsydQrJJG7BjegpP0go49pkxzHOb1V2JbtMPzLwmVV2z9PS57O8csa1lI5UFlNJ0uiyDLllCoit1J40Rgag==
