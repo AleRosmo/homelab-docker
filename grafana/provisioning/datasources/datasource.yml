@@ -8,5 +8,7 @@ datasources:
     jsonData:
       organization: homelab
       defaultBucket: water_heating_data
+      version: Flux
     secureJsonData:
       token: ZSAvsydQrJJG7BjegpP0go49pkxzHOb1V2JbtMPzLwmVV2z9PS57O8csa1lI5UFlNJ0uiyDLllCoit1J40Rgag==
+    editable: true
